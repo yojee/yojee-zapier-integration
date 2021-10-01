@@ -1,4 +1,5 @@
 const itemFactory = require('./itemFactory.js');
+const itemStepFactory = require('./itemStepFactory.js');
 
 const payload = (inputData) => {
   const body = {
@@ -15,6 +16,10 @@ const payload = (inputData) => {
 
   inputData.items.forEach((items) => {
     body.items.push(itemFactory(items));
+  });
+
+  inputData.items.forEach((items, index) => {
+    body.item_steps.push(...itemStepFactory(items, index));
   });
 
   // Pickup Step
@@ -47,17 +52,7 @@ const payload = (inputData) => {
     to_time: inputData.dropoff_to_time,
   });
 
-  body.item_steps.push({
-    "type": "pickup",
-    "order_step_id": 0,
-    "item_id": 0,
-  });
 
-  body.item_steps.push({
-    "type": "dropoff",
-    "order_step_id": 1,
-    "item_id": 0,
-  });
 
   return body;
 }

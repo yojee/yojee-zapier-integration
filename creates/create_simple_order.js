@@ -1,5 +1,9 @@
+const payloadFactory = require('../helpers/payloadFactory.js');
+
 const perform = async (z, bundle) => {
-  z.console.log("bundle:", JSON.stringify(bundle, null, 2));
+  // z.console.log("bundle:", JSON.stringify(bundle, null, 2));
+  const body = payloadFactory(bundle.inputData);
+
   const options = {
     url: `${process.env.YOJEE_API_URL}/api/v3/dispatcher/orders`,
     method: 'POST',
@@ -10,13 +14,16 @@ const perform = async (z, bundle) => {
       company_slug: bundle.authData.company_slug,
     },
     params: {},
-    body: {},
+    body: body,
   };
 
+  z.console.log("options:", JSON.stringify(options, null, 2));
+
+  // return {};
   return z.request(options).then((response) => {
     response.throwForStatus();
     const results = response.json;
-
+    z.console.log("results:", JSON.stringify(results, null, 2));
     // You can do any parsing you need for results here before returning them
 
     return results;
@@ -100,7 +107,7 @@ module.exports = {
       {
         key: 'order_price_amount',
         label: 'Order Price Amount',
-        type: 'number',
+        type: 'string',
         required: false,
         list: false,
         altersDynamicFields: false,
@@ -437,7 +444,7 @@ module.exports = {
           {
             key: 'item_price_amount',
             label: 'Price Amount',
-            type: 'number',
+            type: 'string',
             required: false,
             list: false,
             altersDynamicFields: false,
